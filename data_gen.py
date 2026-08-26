@@ -56,11 +56,8 @@ def genera_pk_cosmologico(omega_m, n_s, sigma8):
                                                                                         # 500 punti sono 100/decade e funzionano bene almeno visivamente (test_pk.py) 
     pk_scaled = pk[0] * sigma8_factor
 
-    # CAMB dà 'kh' in [h/Mpc]. moltiplicando per h ottengo i k in [1/Mpc]
     k_mpc = kh * h
 
-    # Divido per h^3 per passare da [(Mpc/h)^3] a [Mpc^3]
-    # Divido per BOX_LENGTH per schiacciare il 3D sul 2D, ottenendo [Mpc^2]
     pk_2d = pk_scaled / (h**3 * BOX_LENGTH)
     
     pk_interp = interp1d(k_mpc, pk_2d, kind='cubic', fill_value="extrapolate")    # fit con scipy.interpolate
