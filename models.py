@@ -63,12 +63,12 @@ class SimpleCNN(nn.Module):
         self.body = nn.Sequential(
             nn.Conv2d(1, 32, kernel_size=3, padding=1),
             nn.BatchNorm2d(32),
-            nn.LeakyReLU(0.1),
+            nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2),
             
             nn.Conv2d(32, 128, kernel_size=3, padding=1),
             nn.BatchNorm2d(128),
-            nn.LeakyReLU(0.1),
+            nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2),
             
 
@@ -80,7 +80,7 @@ class SimpleCNN(nn.Module):
         self.head = nn.Sequential(
             nn.Dropout(0.1),
             nn.Linear(512, 128),
-            nn.LeakyReLU(0.1),
+            nn.ReLU(),
             nn.Dropout(0.3),
             nn.Linear(128, 3)
         )
@@ -100,7 +100,7 @@ def vgg_block(num_convs, in_channels, out_channels):
     for _ in range(num_convs):
         layers.append(nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1))
         layers.append(nn.BatchNorm2d(out_channels)) # normalizza dati in uscita
-        layers.append(nn.LeakyReLU(0.1))    # Leaky per mantenere anche underdensity
+        layers.append(nn.ReLU())    # Leaky per mantenere anche underdensity
         in_channels = out_channels 
         
     layers.append(nn.MaxPool2d(kernel_size=2, stride=2))
@@ -136,7 +136,7 @@ class CosmoVGG(nn.Module):
             nn.Flatten(),       # pulisce dati into un array 1D
             nn.Dropout(0.4),    # overfitting
             nn.Linear(in_channels, 128),    # fully connected
-            nn.LeakyReLU(0.1),
+            nn.ReLU(),
             nn.Linear(128, 3) # output = (omega_m, n_s, sigma_8)
         )
 
@@ -159,27 +159,27 @@ class InceptionBlock(nn.Module):
         self.ramo1 = nn.Sequential(
             nn.Conv2d(in_channels, c1, kernel_size=1),
             nn.BatchNorm2d(c1),
-            nn.LeakyReLU(0.1)
+            nn.ReLU()
         )
         
         # RAMO 2: 3x3
         self.ramo2 = nn.Sequential(
             nn.Conv2d(in_channels, c2[0], kernel_size=1),   # 1x1 riduce numero canali
             nn.BatchNorm2d(c2[0]),
-            nn.LeakyReLU(0.1),
+            nn.ReLU(),
             nn.Conv2d(c2[0], c2[1], kernel_size=3, padding=1),
             nn.BatchNorm2d(c2[1]),
-            nn.LeakyReLU(0.1)
+            nn.ReLU()
         )
         
         # RAMO 3: 5x5
         self.ramo3 = nn.Sequential(
             nn.Conv2d(in_channels, c3[0], kernel_size=1),
             nn.BatchNorm2d(c3[0]),
-            nn.LeakyReLU(0.1),
+            nn.ReLU(),
             nn.Conv2d(c3[0], c3[1], kernel_size=5, padding=2),
             nn.BatchNorm2d(c3[1]),
-            nn.LeakyReLU(0.1)
+            nn.ReLU()
         )
         
         # RAMO 4: MaxPool + 1x1
@@ -187,7 +187,7 @@ class InceptionBlock(nn.Module):
             nn.MaxPool2d(kernel_size=3, stride=1, padding=1),
             nn.Conv2d(in_channels, c4, kernel_size=1),
             nn.BatchNorm2d(c4),
-            nn.LeakyReLU(0.1)
+            nn.ReLU()
         )
 
     def forward(self, x):
@@ -206,7 +206,7 @@ class CosmoGoogLeNet(nn.Module):
         self.stem = nn.Sequential(      # res_finale = res_iniziale/4
             nn.Conv2d(1, 32, kernel_size=5, stride=2, padding=2),   # dimezza risoluzione
             nn.BatchNorm2d(32),
-            nn.LeakyReLU(0.1),
+            nn.ReLU(),
             nn.MaxPool2d(kernel_size=3, stride=2, padding=1)    # dimezza risoluzione
         )
         
@@ -229,7 +229,7 @@ class CosmoGoogLeNet(nn.Module):
             nn.Flatten(),
             nn.Dropout(0.4),
             nn.Linear(448, 128),
-            nn.LeakyReLU(0.1),
+            nn.ReLU(),
             nn.Linear(128, 3) # output = (omega_m, n_s, sigma_8)
         )
 
@@ -256,7 +256,7 @@ class ResidualBlock(nn.Module):
         self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=3,                # questa conv può cambiare res
                                padding=1, stride=strides)
         self.bn1 = nn.BatchNorm2d(out_channels)
-        self.leaky = nn.LeakyReLU(0.1)
+        self.leaky = nn.ReLU()
 
 
         self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size=3, padding=1)    # questa mantiene sempre stessa res
@@ -302,7 +302,7 @@ class CosmoResNet(nn.Module):
         self.stem = nn.Sequential(
             nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3),
             nn.BatchNorm2d(64),
-            nn.LeakyReLU(0.1),
+            nn.ReLU(),
             nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
         )
         
@@ -323,7 +323,7 @@ class CosmoResNet(nn.Module):
             nn.Flatten(),
             nn.Dropout(0.4),
             nn.Linear(in_channels, 128),
-            nn.LeakyReLU(0.1),
+            nn.ReLU(),
             nn.Linear(128, 3) # output = (omega_m, n_s, sigma_8)
         )
 
@@ -342,7 +342,7 @@ class CosmoResNet3head(nn.Module):
         self.stem = nn.Sequential(
             nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3),
             nn.BatchNorm2d(64),
-            nn.LeakyReLU(0.1),
+            nn.ReLU(),
             nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
         )
         
@@ -366,19 +366,19 @@ class CosmoResNet3head(nn.Module):
 
         self.head_om = nn.Sequential(
             nn.Linear(in_channels, 64),
-            nn.LeakyReLU(0.1),
+            nn.ReLU(),
             nn.Linear(64, 1) 
         )
 
         self.head_ns = nn.Sequential(
             nn.Linear(in_channels, 64),
-            nn.LeakyReLU(0.1),
+            nn.ReLU(),
             nn.Linear(64, 1) 
         )
 
         self.head_s8 = nn.Sequential(
             nn.Linear(in_channels, 64),
-            nn.LeakyReLU(0.1),
+            nn.ReLU(),
             nn.Linear(64, 1) 
         )
 
@@ -400,7 +400,7 @@ class CosmoResNetNLL(nn.Module):
         self.stem = nn.Sequential(
             nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3),
             nn.BatchNorm2d(64),
-            nn.LeakyReLU(0.1),
+            nn.ReLU(),
             nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
         )
         
@@ -424,19 +424,19 @@ class CosmoResNetNLL(nn.Module):
 
         self.head_om = nn.Sequential(
             nn.Linear(in_channels, 64),
-            nn.LeakyReLU(0.1),
+            nn.ReLU(),
             nn.Linear(64, 2) 
         )
 
         self.head_ns = nn.Sequential(
             nn.Linear(in_channels, 64),
-            nn.LeakyReLU(0.1),
+            nn.ReLU(),
             nn.Linear(64, 2) 
         )
 
         self.head_s8 = nn.Sequential(
             nn.Linear(in_channels, 64),
-            nn.LeakyReLU(0.1),
+            nn.ReLU(),
             nn.Linear(64, 2) 
         )
 
@@ -470,12 +470,12 @@ class SimpleIbridaCosmoNet(nn.Module):
         self.cnn_branch = nn.Sequential(
             nn.Conv2d(1, 16, kernel_size=3, padding=1),
             nn.BatchNorm2d(16),
-            nn.LeakyReLU(0.1),
+            nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2),
             
             nn.Conv2d(16, 32, kernel_size=3, padding=1),
             nn.BatchNorm2d(32),
-            nn.LeakyReLU(0.1),
+            nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2),
             
 
@@ -485,16 +485,16 @@ class SimpleIbridaCosmoNet(nn.Module):
 
         self.pk_branch = nn.Sequential(
             nn.Linear(pk_length, 64),
-            nn.LeakyReLU(0.1),
+            nn.ReLU(),
             nn.BatchNorm1d(64),
             nn.Linear(64, 32),
-            nn.LeakyReLU(0.1)
+            nn.ReLU()
         )
 
         self.head = nn.Sequential(
             nn.Dropout(0.1),
             nn.Linear(512 + 32, 128),
-            nn.LeakyReLU(0.1),
+            nn.ReLU(),
             nn.Dropout(0.3),
             nn.Linear(128, 3)
         )
@@ -519,7 +519,7 @@ class IbridaCosmoResNet(nn.Module):
         self.stem = nn.Sequential(
             nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3),
             nn.BatchNorm2d(64),
-            nn.LeakyReLU(0.1),
+            nn.ReLU(),
             nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
         )
         
@@ -540,16 +540,16 @@ class IbridaCosmoResNet(nn.Module):
 
         self.pk_branch = nn.Sequential(
             nn.Linear(pk_length, 64),
-            nn.LeakyReLU(0.1),
+            nn.ReLU(),
             nn.BatchNorm1d(64),
             nn.Linear(64, 32),
-            nn.LeakyReLU(0.1)
+            nn.ReLU()
         )
 
         self.head = nn.Sequential(
             nn.Dropout(0.1),
             nn.Linear(in_channels + 32, 128),
-            nn.LeakyReLU(0.1),
+            nn.ReLU(),
             nn.Dropout(0.3),
             nn.Linear(128, 3)
         )
