@@ -12,12 +12,12 @@ class LogNormalDataset(Dataset):
 
         # pre-processing
 
-        campione_statistico = self.campi[:200].flatten().float() # crea array 1D per studiarne la statistica
+        # campione_statistico = self.campi[:200].flatten().float() # crea array 1D per studiarne la statistica
         
-        limite_superiore = torch.quantile(campione_statistico, 0.995)
-        limite_inferiore = torch.quantile(campione_statistico, 0.005)
+        # limite_superiore = torch.quantile(campione_statistico, 0.995)
+        # limite_inferiore = torch.quantile(campione_statistico, 0.005)
         
-        self.campi = torch.clamp(self.campi, min=limite_inferiore, max=limite_superiore)  # evita picchi o valli eccessive per il training
+        # self.campi = torch.clamp(self.campi, min=limite_inferiore, max=limite_superiore)  # evita picchi o valli eccessive per il training
         
 
         # normalizzazione Z-score
