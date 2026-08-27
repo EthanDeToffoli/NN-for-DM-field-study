@@ -48,7 +48,7 @@ def main():
     PERCORSO_Y = '/mnt/dataset_lognormale/etichette_y_base.pt'
     PERCORSO_MODELLO = '/mnt/dataset_lognormale/modello_addestrato_base.pth'
 
-    BATCH_SIZE = 256
+    BATCH_SIZE = 128
     EPOCHE = 50
     LEARNING_RATE = 0.0003
 
